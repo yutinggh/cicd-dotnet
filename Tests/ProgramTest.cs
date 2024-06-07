@@ -1,15 +1,14 @@
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
 namespace Tests
 {
-    public class ProgramTests : IClassFixture<WebApplicationFactory<Program>>
+    public class ProgramTests : IClassFixture<WebApplicationFactory<ProgramTests>> // Adjusted namespace
     {
-        private readonly WebApplicationFactory<Program> _factory;
+        private readonly WebApplicationFactory<ProgramTests> _factory;
 
-        public ProgramTests(WebApplicationFactory<Program> factory)
+        public ProgramTests(WebApplicationFactory<ProgramTests> factory)
         {
             _factory = factory;
         }
@@ -28,9 +27,5 @@ namespace Tests
             var responseString = await response.Content.ReadAsStringAsync();
             Assert.Equal("Hello World!", responseString);
         }
-    }
-
-    internal class WebApplicationFactory<T>
-    {
     }
 }
