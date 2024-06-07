@@ -5,7 +5,7 @@
       "coverlet.collector/3.1.2": {
         "type": "package",
         "build": {
-          "build/netstandard1.0/_._": {}
+          "build/netstandard1.0/coverlet.collector.targets": {}
         }
       },
       "Microsoft.AspNetCore.Mvc.Testing/7.0.0": {
@@ -912,7 +912,8 @@
           "System.Diagnostics.TextWriterTraceListener": "4.3.0"
         },
         "build": {
-          "build/net5.0/_._": {}
+          "build/net5.0/MSTest.TestAdapter.props": {},
+          "build/net5.0/MSTest.TestAdapter.targets": {}
         }
       },
       "MSTest.TestFramework/2.2.10": {
@@ -928,7 +929,7 @@
           }
         },
         "build": {
-          "build/net5.0/_._": {}
+          "build/net5.0/MSTest.TestFramework.targets": {}
         }
       },
       "Newtonsoft.Json/13.0.1": {
@@ -1376,7 +1377,6 @@
           "MSTest.TestAdapter": "2.2.10",
           "MSTest.TestFramework": "2.2.10",
           "Microsoft.AspNetCore.Mvc.Testing": "7.0.0",
-          "Microsoft.NET.Test.Sdk": "17.4.0",
           "Newtonsoft.Json": "13.0.1",
           "NuGet.Frameworks": "6.5.0",
           "coverlet.collector": "3.1.2",
@@ -4199,10 +4199,13 @@
   },
   "projectFileDependencyGroups": {
     "net7.0": [
+      "MSTest.TestAdapter >= 2.2.10",
+      "MSTest.TestFramework >= 2.2.10",
       "Microsoft.AspNetCore.Mvc.Testing >= 7.0.0",
       "Microsoft.NET.Test.Sdk >= 17.4.0",
       "NuGet.Frameworks >= 6.5.0",
       "cicd-dotnet >= 1.0.0",
+      "coverlet.collector >= 3.1.2",
       "xunit >= 2.8.1",
       "xunit.runner.visualstudio >= 2.8.1"
     ]
@@ -4260,6 +4263,14 @@
       "net7.0": {
         "targetAlias": "net7.0",
         "dependencies": {
+          "MSTest.TestAdapter": {
+            "target": "Package",
+            "version": "[2.2.10, )"
+          },
+          "MSTest.TestFramework": {
+            "target": "Package",
+            "version": "[2.2.10, )"
+          },
           "Microsoft.AspNetCore.Mvc.Testing": {
             "target": "Package",
             "version": "[7.0.0, )"
@@ -4271,6 +4282,10 @@
           "NuGet.Frameworks": {
             "target": "Package",
             "version": "[6.5.0, )"
+          },
+          "coverlet.collector": {
+            "target": "Package",
+            "version": "[3.1.2, )"
           },
           "xunit": {
             "target": "Package",

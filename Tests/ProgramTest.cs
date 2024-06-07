@@ -1,14 +1,13 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
 namespace Tests
 {
-    public class ProgramTests : IClassFixture<WebApplicationFactory<ProgramTests>> // Adjusted namespace
+    public class ProgramTests : IClassFixture<WebApplicationFactory<cicd_dotnet.Program>>
     {
-        private readonly WebApplicationFactory<ProgramTests> _factory;
+        private readonly WebApplicationFactory<cicd_dotnet.Program> _factory;
 
-        public ProgramTests(WebApplicationFactory<ProgramTests> factory)
+        public ProgramTests(WebApplicationFactory<cicd_dotnet.Program> factory)
         {
             _factory = factory;
         }
