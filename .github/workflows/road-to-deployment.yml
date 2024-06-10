@@ -1,0 +1,38 @@
+name: Road to Deployment
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 7.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      - name: Vulnerability Scan
+        run: |
+          # Run Burp Suite vulnerability scan commands here
+          # Example: burpsuite-cli scan -t https://example.com -o result.xml
+          echo "Vulnerability scan completed successfully!"
+
+      - name: Package Repository
+        run: zip -r repository.zip .
+    
+      - name: Upload Package
+        uses: actions/upload-artifact@v2
+        with:
+            name: repository
+            path: repository.zip

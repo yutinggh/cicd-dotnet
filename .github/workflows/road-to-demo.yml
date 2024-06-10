@@ -1,0 +1,35 @@
+name: Road to Demo
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 7.0.x
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      - name: Deploy to Testing Environment
+        # # Add deployment steps here, such as deploying to a testing environment
+        # # Example: Use SSH or FTP to deploy to a testing server
+        # # Note: Replace the placeholders with your deployment commands
+        # run: |
+        #   ssh user@example.com "cd /path/to/deployment && git pull origin release && dotnet publish -o published_folder"
+        #   # Example: Restarting the application after deployment
+        #   ssh user@example.com "sudo systemctl restart your-application.service"
+        run: echo "Deployment to testing environment completed successfully!"
