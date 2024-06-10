@@ -2,7 +2,8 @@ name: Road to Release
 
 on:
   pull_request:
-    branches: [ "release" ]
+    branches:
+      - 'release*'
 
 jobs:
   build-and-test:
