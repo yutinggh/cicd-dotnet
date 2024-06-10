@@ -25,9 +25,7 @@ jobs:
       run: dotnet build --no-restore
 
     - name: Run unit tests
-      run: |
-        dotnet test ./tests/UnitTests --no-build --verbosity normal > unit_test.log || true
-        grep -v "Testhost process for source(s).* exited with error: Error: An assembly specified in the application dependencies manifest (testhost.deps.json) was not found" unit_test.log
+      run: dotnet test ./tests/UnitTests --no-build --verbosity normal
         
     - name: Install ASP.NET Core runtime
       uses: actions/setup-dotnet@v4
@@ -35,9 +33,7 @@ jobs:
         dotnet-version: 7.0.x
 
     - name: Run end-to-end tests
-      run: |
-        dotnet test ./tests/RegressionTests --no-build --verbosity normal > regression_test.log || true
-        grep -v "Testhost process for source(s).* exited with error: Error: An assembly specified in the application dependencies manifest (testhost.deps.json) was not found" regression_test.log
+      run: dotnet test ./tests/RegressionTests --no-build --verbosity normal
 
     # - name: Merge to release branch
     #   if: success()
