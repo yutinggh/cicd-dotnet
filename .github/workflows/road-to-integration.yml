@@ -2,7 +2,8 @@ name: Road to Integration
 
 on:
   pull_request:
-    branches: [ "integration" ]
+    branches: 
+      - 'integration*'
 
 jobs:
   build:

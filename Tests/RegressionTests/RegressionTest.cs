@@ -26,7 +26,41 @@ namespace EndToEndTests
             // Assert
             response.EnsureSuccessStatusCode();
             var responseString = await response.Content.ReadAsStringAsync();
-            Assert.Equal("Hello World!", responseString);
+            Assert.Contains("Hello World!", responseString);
+        }
+
+        [Fact]
+        public async Task Click_Button_OnHomePage_NavigatesToNewPage()
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+
+            // Act: Request the home page
+            var response = await client.GetAsync("/");
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            // Print responseString for debugging
+            System.Diagnostics.Debug.WriteLine("Home Page HTML: " + responseString);
+
+            // Extract the button link from the response string
+            var buttonLinkStartIndex = responseString.IndexOf("window.location.href='/") + "window.location.href='".Length;
+            var buttonLinkEndIndex = responseString.IndexOf("'", buttonLinkStartIndex);
+            var buttonLink = responseString.Substring(buttonLinkStartIndex, buttonLinkEndIndex - buttonLinkStartIndex);
+
+            // Print buttonLink for debugging
+            System.Diagnostics.Debug.WriteLine("Extracted Button Link: " + buttonLink);
+
+            // Ensure the button link is correct
+            Assert.False(string.IsNullOrEmpty(buttonLink), "Button link should not be null or empty.");
+
+            // Navigate to the new page
+            response = await client.GetAsync(buttonLink);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            responseString = await response.Content.ReadAsStringAsync();
+            Assert.Equal("New Page", responseString);
         }
     }
 }
