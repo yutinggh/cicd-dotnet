@@ -1,5 +1,6 @@
 using cicd_dotnet.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -25,14 +26,14 @@ namespace cicd_dotnet
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Hello World!");
+                    context.Response.ContentType = "text/html";
+                    string response = "Hello World!<br/><button onclick=\"window.location.href='/new-page';\">Go to New Page</button>";
+                    await context.Response.WriteAsync(response);
                 });
 
-                endpoints.MapGet("/add", async context =>
+                endpoints.MapGet("/new-page", async context =>
                 {
-                    var mathService = context.RequestServices.GetService<MathService>();
-                    var result = mathService!.Add(5, 3);
-                    await context.Response.WriteAsync($"5 + 3 = {result}");
+                    await context.Response.WriteAsync("New Page");
                 });
             });
         }
