@@ -945,7 +945,7 @@
           }
         }
       },
-      "NuGet.Frameworks/6.5.0": {
+      "NuGet.Frameworks/6.11.0-preview.2": {
         "type": "package",
         "compile": {
           "lib/netstandard2.0/NuGet.Frameworks.dll": {}
@@ -2887,10 +2887,10 @@
         "packageIcon.png"
       ]
     },
-    "NuGet.Frameworks/6.5.0": {
-      "sha512": "QWINE2x3MbTODsWT1Gh71GaGb5icBz4chS8VYvTgsBnsi8esgN6wtHhydd7fvToWECYGq7T4cgBBDiKD/363fg==",
+    "NuGet.Frameworks/6.11.0-preview.2": {
+      "sha512": "1211DdHCN4DLDefSZMecFmV6jEN5sbsjwI8uVTztxtTKPj1RHlXBgaCqaqfBim+cj+SnCQmDN13QOLZsTZC9oQ==",
       "type": "package",
-      "path": "nuget.frameworks/6.5.0",
+      "path": "nuget.frameworks/6.11.0-preview.2",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2898,7 +2898,7 @@
         "icon.png",
         "lib/net472/NuGet.Frameworks.dll",
         "lib/netstandard2.0/NuGet.Frameworks.dll",
-        "nuget.frameworks.6.5.0.nupkg.sha512",
+        "nuget.frameworks.6.11.0-preview.2.nupkg.sha512",
         "nuget.frameworks.nuspec"
       ]
     },
@@ -4203,7 +4203,7 @@
       "MSTest.TestFramework >= 2.2.10",
       "Microsoft.AspNetCore.Mvc.Testing >= 7.0.0",
       "Microsoft.NET.Test.Sdk >= 17.4.0",
-      "NuGet.Frameworks >= 6.5.0",
+      "NuGet.Frameworks >= 6.11.0-preview.2",
       "cicd-dotnet >= 1.0.0",
       "coverlet.collector >= 3.1.2",
       "xunit >= 2.8.1",
@@ -4281,7 +4281,7 @@
           },
           "NuGet.Frameworks": {
             "target": "Package",
-            "version": "[6.5.0, )"
+            "version": "[6.11.0-preview.2, )"
           },
           "coverlet.collector": {
             "target": "Package",

@@ -174,7 +174,7 @@
             },
             "NuGet.Frameworks": {
               "target": "Package",
-              "version": "[6.5.0, )"
+              "version": "[6.11.0-preview.2, )"
             },
             "coverlet.collector": {
               "target": "Package",
