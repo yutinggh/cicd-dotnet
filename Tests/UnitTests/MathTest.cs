@@ -19,5 +19,16 @@ namespace UnitTests
             // Assert
             Assert.Equal(8, result);
         }
+
+        [Fact]
+        public void Multiply_TwoNumbers()
+        {
+            var mathService = new MathService();
+            var a = 5;
+            var b = 3;
+            var result = mathService.Multiply(a, b);
+
+            Assert.Equal(15, result);
+        }
     }
 }
