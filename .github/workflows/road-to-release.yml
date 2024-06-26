@@ -34,6 +34,9 @@ jobs:
 
     - name: Run end-to-end tests
       run: dotnet test ./Tests/RegressionTests --no-build --verbosity normal
+    
+    - name: Clean working directory
+      run: git clean -fdx
 
     - name: Configure Git
       run: |
