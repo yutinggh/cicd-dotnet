@@ -46,7 +46,7 @@ jobs:
     - name: Merge to release branch
       if: success()
       run: |
-        git fetch
-        git checkout ${{ github.event.pull_request.base.ref }}
-        git merge ${{ github.event.pull_request.head.ref }}
-        git push origin ${{ github.event.pull_request.base.ref }}
+        run: gh pr merge --auto --merge "$PR_URL"
+      env:
+        PR_URL: ${{github.event.pull_request.html_url}}
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
