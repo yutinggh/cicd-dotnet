@@ -10,6 +10,7 @@ namespace cicd_dotnet
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<MathService>();
+            services.AddControllersWithViews();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -23,17 +24,9 @@ namespace cicd_dotnet
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
-
-                endpoints.MapGet("/add", async context =>
-                {
-                    var mathService = context.RequestServices.GetService<MathService>();
-                    var result = mathService!.Add(5, 3);
-                    await context.Response.WriteAsync($"5 + 3 = {result}");
-                });
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
