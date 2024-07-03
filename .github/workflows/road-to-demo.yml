@@ -6,7 +6,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment: demo
+    if: github.ref == 'refs/heads/master'
 
     steps:
       - name: Checkout source code
