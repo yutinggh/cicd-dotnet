@@ -7,7 +7,6 @@ on:
 
 jobs:
   build-and-test:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -27,7 +26,7 @@ jobs:
 
     - name: Run unit tests
       run: dotnet test ./Tests/UnitTests --no-build --verbosity normal
-        
+
     - name: Install ASP.NET Core runtime
       uses: actions/setup-dotnet@v4
       with:
@@ -35,12 +34,18 @@ jobs:
 
     - name: Run end-to-end tests
       run: dotnet test ./Tests/RegressionTests --no-build --verbosity normal
+    
+    - name: Clean working directory
+      run: git clean -fdx
+
+    - name: Configure Git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
     - name: Merge to release branch
       if: success()
-      # run: |
-      #   git fetch
-      #   git checkout release
-      #   git merge --no-ff ${{ github.event.pull_request.head.ref }}
-      #   git push origin release
-      run: echo "Merge to release branch completed successfully!"
+      run: gh pr merge --auto --merge "$PR_URL"
+      env:
+        PR_URL: ${{github.event.pull_request.html_url}}
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

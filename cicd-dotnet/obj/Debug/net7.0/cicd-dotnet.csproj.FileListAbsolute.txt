@@ -343,3 +343,5 @@ C:\Users\User\GitHub\cicd-dotnet\cicd-dotnet\obj\Debug\net7.0\refint\cicd-dotnet
 C:\Users\User\GitHub\cicd-dotnet\cicd-dotnet\obj\Debug\net7.0\cicd-dotnet.pdb
 C:\Users\User\GitHub\cicd-dotnet\cicd-dotnet\obj\Debug\net7.0\cicd-dotnet.genruntimeconfig.cache
 C:\Users\User\GitHub\cicd-dotnet\cicd-dotnet\obj\Debug\net7.0\ref\cicd-dotnet.dll
+C:\Users\User\GitHub\cicd-dotnet\cicd-dotnet\obj\Debug\net7.0\cicd-dotnet.RazorAssemblyInfo.cache
+C:\Users\User\GitHub\cicd-dotnet\cicd-dotnet\obj\Debug\net7.0\cicd-dotnet.RazorAssemblyInfo.cs

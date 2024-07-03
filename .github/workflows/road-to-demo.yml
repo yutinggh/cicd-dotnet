@@ -1,13 +1,12 @@
 name: Road to Demo
 
 on:
-  push:
-    branches:
-      - 'release*'
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
 
     steps:
       - name: Checkout source code
@@ -23,6 +22,20 @@ jobs:
 
       - name: Build
         run: dotnet build --no-restore
+
+      - name: Check coding standards
+        run: dotnet format --verify-no-changes
+  
+      - name: Run unit tests
+        run: dotnet test ./Tests/UnitTests --no-build --verbosity normal
+
+      - name: Install ASP.NET Core runtime
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 7.0.x
+  
+      - name: Run end-to-end tests
+        run: dotnet test ./Tests/RegressionTests --no-build --verbosity normal
 
       - name: Deploy to Testing Environment
         # # Add deployment steps here, such as deploying to a testing environment
