@@ -26,6 +26,9 @@ jobs:
     - name: Check coding standards
       run: dotnet format --verify-no-changes
 
+    - name: Clean up old coverage files
+      run: rm -rf coverage/*
+
     - name: Run unit tests with coverage
       run: dotnet test ./Tests/UnitTests --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage/unit
 
@@ -37,8 +40,7 @@ jobs:
 
     - name: Merge coverage reports
       run: |
-        reportgenerator -reports:coverage/unit/coverage.cobertura.xml -targetdir:coverage/merged
-        reportgenerator -reports:coverage/regression/coverage.cobertura.xml -targetdir:coverage/merged
+        reportgenerator -reports:"coverage/unit/**/coverage.cobertura.xml;coverage/regression/**/coverage.cobertura.xml" -targetdir:coverage/merged
       env:
         PATH: $PATH:/home/runner/.dotnet/tools
 
