@@ -47,7 +47,7 @@ jobs:
     - name: Code Coverage Report
       uses: irongut/CodeCoverageSummary@v1.3.0
       with:
-        filename: coverage/merged/**/coverage.cobertura.xml
+        filename: coverage/merged/index.html
         badge: true
         format: markdown
         hide_branch_rate: false
