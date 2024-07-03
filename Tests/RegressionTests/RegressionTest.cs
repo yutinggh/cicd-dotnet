@@ -15,22 +15,7 @@ namespace EndToEndTests
         }
 
         [Fact]
-        public async Task Get_HomePage_ReturnsHelloWorld()
-        {
-            // Arrange
-            var client = _factory.CreateClient();
-
-            // Act
-            var response = await client.GetAsync("/");
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-            var responseString = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Hello World!", responseString);
-        }
-
-        [Fact]
-        public async Task Click_Button_OnHomePage_NavigatesToNewPage()
+        public async Task Click_Button_GoToCalculator_ShowsCalculatorPage()
         {
             // Arrange
             var client = _factory.CreateClient();
@@ -40,27 +25,33 @@ namespace EndToEndTests
             response.EnsureSuccessStatusCode();
             var responseString = await response.Content.ReadAsStringAsync();
 
-            // Print responseString for debugging
-            System.Diagnostics.Debug.WriteLine("Home Page HTML: " + responseString);
-
             // Extract the button link from the response string
             var buttonLinkStartIndex = responseString.IndexOf("window.location.href='/") + "window.location.href='".Length;
             var buttonLinkEndIndex = responseString.IndexOf("'", buttonLinkStartIndex);
             var buttonLink = responseString.Substring(buttonLinkStartIndex, buttonLinkEndIndex - buttonLinkStartIndex);
 
-            // Print buttonLink for debugging
-            System.Diagnostics.Debug.WriteLine("Extracted Button Link: " + buttonLink);
-
-            // Ensure the button link is correct
-            Assert.False(string.IsNullOrEmpty(buttonLink), "Button link should not be null or empty.");
-
-            // Navigate to the new page
+            // Navigate to the calculator page
             response = await client.GetAsync(buttonLink);
-
-            // Assert
             response.EnsureSuccessStatusCode();
-            responseString = await response.Content.ReadAsStringAsync();
-            Assert.Equal("New Page", responseString);
+
+            // Assert: Verify that we are on the calculator page
+            var calculatorResponseString = await response.Content.ReadAsStringAsync();
+            Assert.Contains("Calculator", calculatorResponseString);
+
+            // Act: Enter numbers and calculate
+            var formData = new System.Net.Http.FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("Number1", "5"),
+                new KeyValuePair<string, string>("Number2", "2"),
+                new KeyValuePair<string, string>("Operation", "Add")
+            });
+
+            response = await client.PostAsync("/Home/Calculate", formData);
+            response.EnsureSuccessStatusCode();
+
+            // Assert: Verify the result
+            var resultResponseString = await response.Content.ReadAsStringAsync();
+            Assert.Contains("Result: 7", resultResponseString);
         }
     }
 }
