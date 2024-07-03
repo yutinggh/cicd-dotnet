@@ -1,0 +1,59 @@
+@model cicd_dotnet.ViewModels.CalculatorViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculator</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h2>Calculator</h2>
+
+    <form id="calculatorForm" method="post">
+        <label for="number1">Number 1:</label>
+        <input type="number" id="number1" name="Number1" value="@Model.Number1" required>
+        <br>
+
+        <label for="operation">Operation:</label>
+        <select id="operation" name="Operation" required>
+            <option value="Add" @(Model.Operation == "Add" ? "selected" : "")>Add</option>
+            <option value="Subtract" @(Model.Operation == "Subtract" ? "selected" : "")>Subtract</option>
+            <option value="Multiply" @(Model.Operation == "Multiply" ? "selected" : "")>Multiply</option>
+            <option value="Divide" @(Model.Operation == "Divide" ? "selected" : "")>Divide</option>
+        </select>
+        <br>
+
+        <label for="number2">Number 2:</label>
+        <input type="number" id="number2" name="Number2" value="@Model.Number2" required>
+        <br>
+
+        <button type="button" id="calculateBtn">Calculate</button>
+    </form>
+
+    <div id="resultContainer">
+        @if (!string.IsNullOrEmpty(Model.Result))
+        {
+            <h3 id="result">@Model.Result</h3>
+        }
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#calculateBtn').click(function () {
+                $.ajax({
+                    url: '@Url.Action("Calculate", "Home")',
+                    type: 'POST',
+                    data: $('#calculatorForm').serialize(),
+                    success: function (result) {
+                        $('#resultContainer').html('<div class="result-box"><h3 id="result">' + result + '</h3></div>');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
