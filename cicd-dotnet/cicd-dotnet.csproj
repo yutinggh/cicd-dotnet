@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="NuGet.Frameworks" Version="6.5.0" />
+    <PackageReference Include="reportgenerator" Version="5.3.7" />
     <PackageReference Include="xunit" Version="2.8.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
