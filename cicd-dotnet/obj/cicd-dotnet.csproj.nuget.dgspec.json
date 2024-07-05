@@ -50,6 +50,12 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "GitHubActionsTestLogger": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.4.1, )"
+            },
             "MSTest.TestAdapter": {
               "target": "Package",
               "version": "[2.2.10, )"
