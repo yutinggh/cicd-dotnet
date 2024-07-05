@@ -28,8 +28,9 @@ jobs:
 
     - name: Test
       run: >
-        dotnet test
-        --configuration Release
+        dotnet test ./Tests/UnitTests
+        --no-build 
+        --verbosity normal
         --logger "GitHubActions;summary.includePassedTests=true;summary.includeSkippedTests=true"
 
 
