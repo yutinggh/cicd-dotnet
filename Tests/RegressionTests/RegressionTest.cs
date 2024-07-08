@@ -15,7 +15,7 @@ namespace EndToEndTests
         }
 
         [Fact]
-        public async Task Click_Button_GoToCalculator_ShowsCalculatorPage()
+        public async Task Click_Button_To_CalculatorPage()
         {
             // Arrange
             var client = _factory.CreateClient();
