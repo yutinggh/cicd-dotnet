@@ -32,19 +32,19 @@ namespace cicd_dotnet.Controllers
                     case "Subtract":
                         result = _mathService.Subtract(model.Number1, model.Number2);
                         break;
-                    case "Multiply":
-                        result = _mathService.Multiply(model.Number1, model.Number2);
-                        break;
-                    case "Divide":
-                        if (model.Number2 != 0)
-                        {
-                            result = _mathService.Divide(model.Number1, model.Number2);
-                        }
-                        else
-                        {
-                            return Content("Cannot divide by zero.");
-                        }
-                        break;
+                    // case "Multiply":
+                    //     result = _mathService.Multiply(model.Number1, model.Number2);
+                    //     break;
+                    // case "Divide":
+                    //     if (model.Number2 != 0)
+                    //     {
+                    //         result = _mathService.Divide(model.Number1, model.Number2);
+                    //     }
+                    //     else
+                    //     {
+                    //         return Content("Cannot divide by zero.");
+                    //     }
+                    //     break;
                 }
                 return Content($"Result: {result}");
             }
