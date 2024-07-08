@@ -50,6 +50,8 @@ jobs:
 
     - name: Combine Coverage Summaries
       run: |
+        dotnet tool install -g dotnet-reportgenerator-globaltool
+        
         echo "# Unit Tests Coverage" > combined-coverage-summary.md
         reportgenerator -reports:coverage/UnitTests/**/coverage.cobertura.xml -targetdir:CodeCoverage/UnitTests -reporttypes:MarkdownSummary
         cat CodeCoverage/UnitTests/Summary.md >> combined-coverage-summary.md
