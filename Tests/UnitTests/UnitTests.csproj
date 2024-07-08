@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\cicd-dotnet\cicd-dotnet.csproj" />
+    <ProjectReference Include="..\RegressionTests\RegressionTests.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="GitHubActionsTestLogger" Version="2.4.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
