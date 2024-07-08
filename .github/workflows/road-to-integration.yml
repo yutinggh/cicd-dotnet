@@ -18,21 +18,24 @@ jobs:
         dotnet-version: 7.0.x
 
     - name: Restore dependencies
-      run: dotnet restore "Tests/UnitTests/UnitTests.csproj"
+      run: dotnet restore
 
     - name: Build
-      run: dotnet build --no-restore "Tests/UnitTests/UnitTests.csproj"
+      run: dotnet build --no-restore 
 
     - name: Check coding standards
       run: dotnet format --verify-no-changes
 
-    - name: Test
-      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage "Tests/UnitTests/UnitTests.csproj"
+    - name: Test UnitTests
+      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage/UnitTests Tests/UnitTests/UnitTests.csproj
+
+    - name: Test RegressionTests
+      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage/RegressionTests Tests/RegressionTests/RegressionTests.csproj
 
     - name: Code Coverage Summary Report
       uses: irongut/CodeCoverageSummary@v1.3.0
       with:
-        filename: 'coverage/*/coverage.cobertura.xml'
+        filename: 'coverage/**/coverage.cobertura.xml'
         badge: true
         format: 'markdown'
         output: 'both'
@@ -60,13 +63,13 @@ jobs:
         dotnet-version: 7.0.x
 
     - name: Restore dependencies
-      run: dotnet restore "Tests/UnitTests/UnitTests.csproj"
+      run: dotnet restore
 
     - name: Build
-      run: dotnet build --no-restore "Tests/UnitTests/UnitTests.csproj"
+      run: dotnet build --no-restore
 
     - name: Test
-      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage "Tests/UnitTests/UnitTests.csproj"
+      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage 
 
     - name: Create code coverage report
       run: |
@@ -88,13 +91,13 @@ jobs:
         dotnet-version: 7.0.x
 
     - name: Restore dependencies
-      run: dotnet restore "Tests/UnitTests/UnitTests.csproj"
+      run: dotnet restore
 
     - name: Build
-      run: dotnet build --no-restore "Tests/UnitTests/UnitTests.csproj"
+      run: dotnet build --no-restore 
     
     - name: Test
-      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" "Tests/UnitTests/UnitTests.csproj"
+      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
 
     - name: Test Report
       uses: EnricoMi/publish-unit-test-result-action@v2
@@ -102,28 +105,3 @@ jobs:
       with:
         check_name: MS XUnit Tests Results                 
         files: Tests/UnitTests/TestResults/test-results.trx    # Path to test results
-
-    # - name: Clean up old coverage files
-    #   run: rm -rf coverage/*
-
-    # - name: Run unit tests with coverage
-    #   run: dotnet test ./Tests/UnitTests --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage/unit
-
-    # - name: Code Coverage Report
-    #   uses: irongut/CodeCoverageSummary@v1.3.0
-    #   with:
-    #     filename: coverage/unit/**/coverage.cobertura.xml
-    #     badge: true
-    #     format: markdown
-    #     hide_branch_rate: false
-    #     hide_complexity: false
-    #     indicators: true
-    #     output: both
-    #     thresholds: '60 80'
-
-    # - name: Add Coverage PR Comment
-    #   uses: marocchino/sticky-pull-request-comment@v2
-    #   if: github.event_name == 'pull_request'
-    #   with:
-    #     recreate: true
-    #     path: code-coverage-results.md

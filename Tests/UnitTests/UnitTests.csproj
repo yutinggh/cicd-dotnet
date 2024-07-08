@@ -7,11 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\cicd-dotnet\cicd-dotnet.csproj" />
-    <ProjectReference Include="..\RegressionTests\RegressionTests.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="GitHubActionsTestLogger" Version="2.4.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
@@ -28,7 +23,6 @@
     </PackageReference>
     <ProjectReference Include="..\..\cicd-dotnet\cicd-dotnet.csproj" />
     <PackageReference Include="NuGet.Frameworks" Version="6.11.0-preview.2" />
-    <!-- <PackageReference Include="Microsoft.TestPlatform.CommunicationUtilities" Version="17.7.2-release-23578-01" /> -->
   </ItemGroup>
 
 </Project>
