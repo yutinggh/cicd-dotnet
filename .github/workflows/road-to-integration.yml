@@ -26,12 +26,6 @@ jobs:
     - name: Check coding standards
       run: dotnet format --verify-no-changes
 
-    - name: Run .NET Code Analysis
-      uses: dotnet/code-analysis@main
-      id: code-analysis
-      with:
-        build-breaking: false
-
     - name: Test UnitTests
       run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage/UnitTests Tests/UnitTests/UnitTests.csproj
 
