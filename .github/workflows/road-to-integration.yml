@@ -6,51 +6,63 @@ on:
       - 'integration*'
 
 jobs:
-  build:
+  coding-standard:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 7.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 7.0.x
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Check coding standards
+        run: dotnet format --verify-no-changes
+  
+  unit-test:
+    runs-on: ubuntu-latest
+    needs: [coding-standard]
 
-    - name: Build
-      run: dotnet build --no-restore 
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Check coding standards
-      run: dotnet format --verify-no-changes
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 7.0.x
+  
+      - name: Restore dependencies
+        run: dotnet restore
+  
+      - name: Build
+        run: dotnet build --no-restore 
 
-    - name: Test UnitTests
-      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage/UnitTests Tests/UnitTests/UnitTests.csproj
+      - name: Test UnitTests
+        run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage/UnitTests Tests/UnitTests/UnitTests.csproj
 
-    - name: Code Coverage Summary Report for UnitTests
-      uses: irongut/CodeCoverageSummary@v1.3.0
-      with:
-        filename: 'coverage/UnitTests/**/coverage.cobertura.xml'
-        badge: true
-        format: 'markdown'
-        output: 'both'
+      - name: Code Coverage Summary Report for UnitTests
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: 'coverage/UnitTests/**/coverage.cobertura.xml'
+          badge: true
+          format: 'markdown'
+          output: 'both'
 
-    - name: Coverage Summaries
-      run: |
-        dotnet tool install -g dotnet-reportgenerator-globaltool
+      - name: Coverage Summaries
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
 
-        echo "# Unit Tests Coverage" > combined-coverage-summary.md
-        reportgenerator -reports:coverage/UnitTests/**/coverage.cobertura.xml -targetdir:CodeCoverage/UnitTests -reporttypes:MarkdownSummary
-        cat CodeCoverage/UnitTests/Summary.md >> combined-coverage-summary.md
+          echo "# Unit Tests Coverage" > combined-coverage-summary.md
+          reportgenerator -reports:coverage/UnitTests/**/coverage.cobertura.xml -targetdir:CodeCoverage/UnitTests -reporttypes:MarkdownSummary
+          cat CodeCoverage/UnitTests/Summary.md >> combined-coverage-summary.md
 
-    - name: Add Coverage PR Comment
-      uses: marocchino/sticky-pull-request-comment@v2
-      if: github.event_name == 'pull_request'
-      with:
-        recreate: true
-        path: combined-coverage-summary.md
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          path: combined-coverage-summary.md
 
-    - name: Write to Job Summary
-      run: cat combined-coverage-summary.md >> $GITHUB_STEP_SUMMARY
+      - name: Write to Job Summary
+        run: cat combined-coverage-summary.md >> $GITHUB_STEP_SUMMARY
