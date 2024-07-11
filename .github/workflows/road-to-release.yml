@@ -6,82 +6,117 @@ on:
       - 'release*'
 
 jobs:
-  build-and-test:
+  coding-standard:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout source code
-      uses: actions/checkout@v4
+      - name: Checkout source code
+        uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 7.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 7.0.x
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Restore dependencies
+        run: dotnet restore
 
-    - name: Build
-      run: dotnet build --no-restore
+      - name: Build
+        run: dotnet build --no-restore
 
-    - name: Check coding standards
-      run: dotnet format --verify-no-changes
+      - name: Check coding standards
+        run: dotnet format --verify-no-changes
+  
+  unit-test:
+    runs-on: ubuntu-latest
+    needs: [coding-standard]
 
-    - name: Test UnitTests
-      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage/UnitTests Tests/UnitTests/UnitTests.csproj
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Test RegressionTests
-      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage/RegressionTests Tests/RegressionTests/RegressionTests.csproj
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 7.0.x
+  
+      - name: Restore dependencies
+        run: dotnet restore
+  
+      - name: Build
+        run: dotnet build --no-restore 
 
-    - name: Code Coverage Summary Report for UnitTests
-      uses: irongut/CodeCoverageSummary@v1.3.0
-      with:
-        filename: 'coverage/UnitTests/**/coverage.cobertura.xml'
-        badge: true
-        format: 'markdown'
-        output: 'both'
+      - name: Test UnitTests
+        run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage/UnitTests Tests/UnitTests/UnitTests.csproj
 
-    - name: Code Coverage Summary Report for RegressionTests
-      uses: irongut/CodeCoverageSummary@v1.3.0
-      with:
-        filename: 'coverage/RegressionTests/**/coverage.cobertura.xml'
-        badge: true
-        format: 'markdown'
-        output: 'both'
+      - name: Code Coverage Summary Report for UnitTests
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: 'coverage/UnitTests/**/coverage.cobertura.xml'
+          badge: true
+          format: 'markdown'
+          output: 'both'
 
-    - name: Combine Coverage Summaries
-      run: |
-        dotnet tool install -g dotnet-reportgenerator-globaltool
+      - name: Coverage Summaries
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
 
-        echo "# Unit Tests Coverage" > combined-coverage-summary.md
-        reportgenerator -reports:coverage/UnitTests/**/coverage.cobertura.xml -targetdir:CodeCoverage/UnitTests -reporttypes:MarkdownSummary
-        cat CodeCoverage/UnitTests/Summary.md >> combined-coverage-summary.md
+          echo "# Unit Tests Coverage" > combined-coverage-summary.md
+          reportgenerator -reports:coverage/UnitTests/**/coverage.cobertura.xml -targetdir:CodeCoverage/UnitTests -reporttypes:MarkdownSummary
+          cat CodeCoverage/UnitTests/Summary.md >> combined-coverage-summary.md
 
-        echo "# Regression Tests Coverage" >> combined-coverage-summary.md
-        reportgenerator -reports:coverage/RegressionTests/**/coverage.cobertura.xml -targetdir:CodeCoverage/RegressionTests -reporttypes:MarkdownSummary
-        cat CodeCoverage/RegressionTests/Summary.md >> combined-coverage-summary.md
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          path: combined-coverage-summary.md
 
-    - name: Add Coverage PR Comment
-      uses: marocchino/sticky-pull-request-comment@v2
-      if: github.event_name == 'pull_request'
-      with:
-        recreate: true
-        path: combined-coverage-summary.md
+      - name: Write to Job Summary
+        run: cat combined-coverage-summary.md >> $GITHUB_STEP_SUMMARY
 
-    - name: Write to Job Summary
-      run: cat combined-coverage-summary.md >> $GITHUB_STEP_SUMMARY
-    
-    # - name: Clean working directory
-    #   run: git clean -fdx
+  regression-test:
+    runs-on: ubuntu-latest
+    needs: [unit-test]
 
-    # - name: Configure Git
-    #   run: |
-    #     git config --global user.name "github-actions[bot]"
-    #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
+    steps:
+      - uses: actions/checkout@v4
 
-    # - name: Merge to release branch
-    #   if: success()
-    #   run: gh pr merge --auto --merge "$PR_URL"
-    #   env:
-    #     PR_URL: ${{github.event.pull_request.html_url}}
-    #     GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 7.0.x
+  
+      - name: Restore dependencies
+        run: dotnet restore
+  
+      - name: Build
+        run: dotnet build --no-restore 
+
+      - name: Test RegressionTests
+        run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage/RegressionTests Tests/RegressionTests/RegressionTests.csproj
+
+      - name: Code Coverage Summary Report for RegressionTests
+        uses: irongut/CodeCoverageSummary@v1.3.0
+        with:
+          filename: 'coverage/RegressionTests/**/coverage.cobertura.xml'
+          badge: true
+          format: 'markdown'
+          output: 'both'
+
+      - name: Combine Coverage Summaries
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+
+          echo "# Regression Tests Coverage" >> combined-coverage-summary.md
+          reportgenerator -reports:coverage/RegressionTests/**/coverage.cobertura.xml -targetdir:CodeCoverage/RegressionTests -reporttypes:MarkdownSummary
+          cat CodeCoverage/RegressionTests/Summary.md >> combined-coverage-summary.md
+
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          path: combined-coverage-summary.md
+
+      - name: Write to Job Summary
+        run: cat combined-coverage-summary.md >> $GITHUB_STEP_SUMMARY
