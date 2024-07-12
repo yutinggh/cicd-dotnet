@@ -122,6 +122,7 @@ jobs:
   deploy-for-testing:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/release'
+    needs: [regression-test]
 
     steps:
       - name: Checkout source code
