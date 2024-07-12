@@ -147,3 +147,95 @@ jobs:
         #   # Example: Restarting the application after deployment
         #   ssh user@example.com "sudo systemctl restart your-application.service"
         run: echo "Deployment to testing environment completed successfully!"
+
+  # release_deployment: # from ehalal
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'pull_request_target' && github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'release' 
+  #   # deploy only to release branch when PR is merged to release
+
+  #   environment:
+  #     name: release
+  #     url: https://uat.ehalal.mqspectrum.com/
+  #   timeout-minutes: 120
+  #   env:
+  #     STAGING_DOCKER_REGISTRY: 632605022431.dkr.ecr.ap-southeast-1.amazonaws.com
+  #     STAGING_TAG: latest
+  #     STAGING_DOCKER_NAME: "ehalal/uat/portal"
+  #     STAGING_ECS_CLUSTERNAME: "ecs-ehalal-uat-cluster"
+  #     STAGING_ECS_SERVICENAME: "ecs-ehalal-uat-service"
+  #     STAGING_ECS_CODEDEPLOY_APPLICATION: "uat-ehalal-codedeploy-ecs-app"
+  #     STAGING_ECS_CODEDEPLOY_DEPLOYMENT_GROUP: "uat-ehalal-codedeploy-ecs-dg"
+  #     STAGING_ECS_TASK_DEFINITION_FAMILY: "td-ehalal-uat"
+  #     STAGING_CONTAINER_NAME: "task-ehalal-uat"
+  #   steps:
+  #     - uses: actions/checkout@v3.2.0
+  #     - name: Current date time
+  #       uses: Kaven-Universe/github-action-current-date-time@v1.2.0
+  #       id: datetime
+  #       with:
+  #         format: "YYYYMMDDHHmmss"
+  #     - run: aws --version
+  #     - name: Configure AWS Credentials
+  #       uses: aws-actions/configure-aws-credentials@v1
+  #       with:
+  #         aws-region: ${{ env.AWS_REGION }}
+  #         aws-access-key-id: ${{ secrets.STAGING_AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.STAGING_AWS_SECRET_ACCESS_KEY }}
+  #     - name: Retag Staging ECR for rollback (latest-yyyyMMddhhmmss)
+  #       uses: abronin/ecr-retag-action@v1.6.0
+  #       with:
+  #         # The name to use for the ECR Repository.
+  #         repository: ${{ env.STAGING_DOCKER_NAME }}
+  #         # The source tag.
+  #         tag: ${{ env.STAGING_TAG }}
+  #         # The destination tag.
+  #         new-tags: ${{ env.STAGING_TAG }}-${{ steps.datetime.outputs.time }}
+  #     - run: docker --version
+  #     - run: aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${STAGING_DOCKER_REGISTRY}
+  #     - name: Build Push Docker
+  #       id: build-image
+  #       uses: docker/build-push-action@v3
+  #       with:
+  #         push: true
+  #         tags: ${{ env.STAGING_DOCKER_REGISTRY }}/${{ env.STAGING_DOCKER_NAME }}:${{ env.STAGING_TAG }}
+  #         file: "src/eHalal.Web/Dockerfile"
+  #     - run: echo "Image pushed to staging!"
+  #     # - run: aws ecs update-service --cluster ecs-ehalal-uat-cluster --service ecs-ehalal-uat-service --force-new-deployment --region ${AWS_REGION}
+  #     # - run: echo "Force Redeployment triggered in ECS! Please wait at least 3 minutes for the changes to occur."
+  #     - name: Download task definition
+  #       id: task-def-download
+  #       run: |
+  #         aws ecs describe-task-definition --task-definition ${{ env.STAGING_ECS_TASK_DEFINITION_FAMILY }} --query taskDefinition > task-definition.json
+  #     - name: Fill in the new image ID in the Amazon ECS task definition
+  #       id: task-def
+  #       uses: aws-actions/amazon-ecs-render-task-definition@v1
+  #       with:
+  #         task-definition: task-definition.json
+  #         container-name: ${{ env.STAGING_CONTAINER_NAME }}
+  #         image: ${{ steps.build-image.outputs.imageid }}
+  #     - name: Set appspec.json values
+  #       id: set-appspec-values
+  #       env:
+  #         container_port: 80
+  #         container_name: ${{ env.STAGING_CONTAINER_NAME }}
+  #         td_family: ${{ env.STAGING_ECS_TASK_DEFINITION_FAMILY }}
+  #         cluster: ${{ env.STAGING_ECS_CLUSTERNAME }}
+  #         service: ${{ env.STAGING_ECS_SERVICENAME }}
+  #         codedeploy-application: ${{ env.STAGING_ECS_CODEDEPLOY_APPLICATION }}
+  #         codedeploy-deployment-group: ${{ env.STAGING_ECS_CODEDEPLOY_DEPLOYMENT_GROUP }}
+  #       run: |
+  #         export TASK_DEF_ARN=$(aws ecs describe-task-definition --task-definition="$td_family" | jq '.taskDefinition.taskDefinitionArn')
+  #           cat ./.github/workflows/appspec.json | jq --arg key "$TASK_DEF_ARN" '.Resources[].TargetService.Properties.TaskDefinition=$key' \
+  #           | jq --arg key "$container_port" '.Resources[].TargetService.Properties.LoadBalancerInfo.ContainerPort=$key' \
+  #           | jq --arg key "$container_name" '.Resources[].TargetService.Properties.LoadBalancerInfo.ContainerName=$key' > .aws/appspec.json
+  #           sed -i 's#\\"##g' .aws/appspec.json  
+  #     - name: Deploy to Amazon ECS
+  #       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+  #       with:
+  #         task-definition: task-definition.json
+  #         service: ${{ env.STAGING_ECS_SERVICENAME }}
+  #         cluster: ${{ env.STAGING_ECS_CLUSTERNAME }}
+  #         wait-for-service-stability: true
+  #         codedeploy-appspec: .aws/appspec.json
+  #         codedeploy-application: ${{ env.STAGING_ECS_CODEDEPLOY_APPLICATION }}
+  #         codedeploy-deployment-group: ${{ env.STAGING_ECS_CODEDEPLOY_DEPLOYMENT_GROUP }}
