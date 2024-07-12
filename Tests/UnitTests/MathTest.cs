@@ -46,19 +46,19 @@ namespace UnitTests
             Assert.Equal(15, result);
         }
 
-        // [Fact]
-        // public void Divide_TwoNumbers()
-        // {
-        //     // Arrange
-        //     var mathService = new MathService();
-        //     var a = 6;
-        //     var b = 3;
+        [Fact]
+        public void Divide_TwoNumbers()
+        {
+            // Arrange
+            var mathService = new MathService();
+            var a = 6;
+            var b = 3;
 
-        //     // Act
-        //     var result = mathService.Divide(a, b);
+            // Act
+            var result = mathService.Divide(a, b);
 
-        //     // Assert
-        //     Assert.Equal(2, result);
-        // }
+            // Assert
+            Assert.Equal(2, result);
+        }
     }
 }
