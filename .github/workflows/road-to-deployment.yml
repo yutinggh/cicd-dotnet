@@ -4,8 +4,22 @@ on:
   workflow_dispatch:
 
 jobs:
+  scan-for-vulnerability:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Vulnerability Scan
+        run: |
+          # Run Burp Suite vulnerability scan commands here
+          # Example: burpsuite-cli scan -t https://example.com -o result.xml
+          echo "Vulnerability scan completed successfully!"
+
   build-and-package:
     runs-on: ubuntu-latest
+    needs: [scan-for-vulnerability]
     if: github.ref == 'refs/heads/release'
 
     steps:
@@ -22,12 +36,6 @@ jobs:
 
       - name: Build
         run: dotnet build --no-restore
-
-      - name: Vulnerability Scan
-        run: |
-          # Run Burp Suite vulnerability scan commands here
-          # Example: burpsuite-cli scan -t https://example.com -o result.xml
-          echo "Vulnerability scan completed successfully!"
 
       - name: Package Repository
         run: zip -r repository.zip .
