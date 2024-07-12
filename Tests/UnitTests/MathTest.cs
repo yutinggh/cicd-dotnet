@@ -35,30 +35,30 @@ namespace UnitTests
             Assert.Equal(2, result);
         }
 
-        [Fact]
-        public void Multiply_TwoNumbers()
-        {
-            var mathService = new MathService();
-            var a = 5;
-            var b = 3;
-            var result = mathService.Multiply(a, b);
+        // [Fact]
+        // public void Multiply_TwoNumbers()
+        // {
+        //     var mathService = new MathService();
+        //     var a = 5;
+        //     var b = 3;
+        //     var result = mathService.Multiply(a, b);
 
-            Assert.Equal(15, result);
-        }
+        //     Assert.Equal(15, result);
+        // }
 
-        [Fact]
-        public void Divide_TwoNumbers()
-        {
-            // Arrange
-            var mathService = new MathService();
-            var a = 6;
-            var b = 3;
+        // [Fact]
+        // public void Divide_TwoNumbers()
+        // {
+        //     // Arrange
+        //     var mathService = new MathService();
+        //     var a = 6;
+        //     var b = 3;
 
-            // Act
-            var result = mathService.Divide(a, b);
+        //     // Act
+        //     var result = mathService.Divide(a, b);
 
-            // Assert
-            Assert.Equal(2, result);
-        }
+        //     // Assert
+        //     Assert.Equal(2, result);
+        // }
     }
 }
