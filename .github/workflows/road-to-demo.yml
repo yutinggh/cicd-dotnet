@@ -6,6 +6,7 @@ on:
 jobs:
   coding-standard:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/release'
 
     steps:
       - name: Checkout source code
@@ -121,7 +122,6 @@ jobs:
 
   deploy-for-testing:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/release'
     needs: [regression-test]
 
     steps:
